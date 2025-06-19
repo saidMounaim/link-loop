@@ -1,9 +1,15 @@
 import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
 import { LinkIcon } from "lucide-react";
+import { headers } from "next/headers";
 import Link from "next/link";
 import React from "react";
+import UserDropdown from "../user-dropown";
 
-const Header = () => {
+const Header = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   return (
     <header className="container mx-auto px-4 py-6">
       <nav className="flex items-center justify-between">
@@ -16,20 +22,26 @@ const Header = () => {
           </span>
         </div>
         <div className="hidden md:flex items-center space-x-6">
-          <a
-            href="#features"
-            className="text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            Features
-          </a>
-          <Link href="/auth">
-            <Button
-              variant="ghost"
-              className="text-gray-600 hover:text-gray-900"
-            >
-              Sign In
-            </Button>
-          </Link>
+          {session ? (
+            <UserDropdown />
+          ) : (
+            <>
+              <a
+                href="#features"
+                className="text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                Features
+              </a>
+              <Link href="/auth">
+                <Button
+                  variant="ghost"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  Sign In
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </nav>
     </header>
