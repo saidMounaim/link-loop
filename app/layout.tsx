@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "LinkLoop is a simple and efficient platform for sharing, managing, and discovering links. Organize your favorite resources and collaborate with others effortlessly.",
 };
 
-export default function RootLayout({
+export default function GlobalLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
