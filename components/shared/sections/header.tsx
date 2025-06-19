@@ -22,7 +22,7 @@ const Header = () => {
           >
             Features
           </a>
-          <Link href="/sign-in">
+          <Link href="/auth">
             <Button
               variant="ghost"
               className="text-gray-600 hover:text-gray-900"
