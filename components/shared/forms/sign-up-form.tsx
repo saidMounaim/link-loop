@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,12 +16,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { signUpSchema } from "@/lib/validations";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 const SignUpForm = () => {
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -34,8 +36,28 @@ const SignUpForm = () => {
 
   const onSubmit = async (values: SignUpFormValues) => {
     setIsLoading(true);
-    console.log(values);
-    setIsLoading(false);
+    try {
+      await authClient.signUp.email(
+        {
+          email: values.email,
+          password: values.password,
+          name: values.fullName,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Account created successfully!");
+            window.location.reload();
+          },
+          onError: (ctx) => {
+            toast.error(ctx.error.statusText);
+          },
+        }
+      );
+    } catch {
+      toast.error("Something went wrong.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

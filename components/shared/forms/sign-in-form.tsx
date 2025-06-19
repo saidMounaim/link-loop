@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,12 +16,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { signInSchema } from "@/lib/validations";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 type SignInFormValues = z.infer<typeof signInSchema>;
 
 const SignInForm = () => {
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -33,8 +35,27 @@ const SignInForm = () => {
 
   const onSubmit = async (values: SignInFormValues) => {
     setIsLoading(true);
-    console.log(values);
-    setIsLoading(false);
+    try {
+      await authClient.signIn.email(
+        {
+          email: values.email,
+          password: values.password,
+          callbackURL: "/dashboard",
+        },
+        {
+          onSuccess: () => {
+            window.location.href = "/dashboard";
+          },
+          onError: () => {
+            toast.error("Invalid email or password.");
+          },
+        }
+      );
+    } catch {
+      toast.error("Something went wrong.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
