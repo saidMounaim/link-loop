@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { FileText, LogOut, UserPlus, User } from "lucide-react";
+import { LogOut, UserPlus, User } from "lucide-react";
 import { getUserInitials } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
