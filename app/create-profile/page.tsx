@@ -9,6 +9,8 @@ import StepBasicInfo from "@/components/shared/steps/step-basic-info";
 import StepBio from "@/components/shared/steps/step-bio";
 import StepProfilePicture from "@/components/shared/steps/step-profile-picture";
 import ProfileNavigation from "@/components/shared/profile/profile-navigation";
+import { addProfile, checkUsernameAvailability } from "@/lib/actions/profiles";
+import { toast } from "sonner";
 
 interface Profile {
   username: string;
@@ -29,11 +31,16 @@ export default function CreateProfilePage() {
     displayName: "",
   });
 
-  const updateProfile = (field: keyof Profile, value: string) => {
+  const updateProfile = async (field: keyof Profile, value: string) => {
     setProfile((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    const checkUsername = await checkUsernameAvailability(profile.username);
+    if (profile.username && !checkUsername.success) {
+      toast.error(checkUsername.error || "Username is already taken.");
+      return;
+    }
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     }
@@ -47,10 +54,27 @@ export default function CreateProfilePage() {
 
   const handleComplete = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      router.push("/dashboard");
-    }, 2000);
+    try {
+      const createProfile = await addProfile({
+        username: profile.username,
+        bio: profile.bio,
+        avatar: profile.avatar,
+        displayName: profile.displayName,
+      });
+      if (!createProfile.success) {
+        toast.error(createProfile.error || "Failed to create profile.");
+        setIsLoading(false);
+        return;
+      }
+      toast.success("Profile created successfully!");
+      setTimeout(() => {
+        setIsLoading(false);
+        router.push("/dashboard");
+      }, 2000);
+    } catch (error) {
+      toast.error("An error occurred while creating your profile.");
+      console.error(error);
+    }
   };
 
   const isStepValid = () => {
