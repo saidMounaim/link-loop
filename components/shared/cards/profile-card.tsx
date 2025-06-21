@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Trash2 } from "lucide-react";
+import { Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { deleteProfile } from "@/lib/actions/profiles";
 import { usePathname } from "next/navigation";
@@ -63,9 +63,24 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
             <p className="text-gray-600 text-center line-clamp-3">
               {profile.bio}
             </p>
-            <Button size="sm" variant="secondary" className="w-full">
-              View Links
-            </Button>
+            <div className="block w-full mt-4">
+              <object>
+                <Link
+                  href={`/update-profile/${profile.username}`}
+                  className="w-full"
+                >
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full flex items-center justify-center"
+                    type="button"
+                  >
+                    <Pencil className="w-4 h-4 mr-2" />
+                    Edit Profile
+                  </Button>
+                </Link>
+              </object>
+            </div>
           </CardContent>
         </Card>
       </Link>

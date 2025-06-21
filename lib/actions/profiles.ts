@@ -143,3 +143,82 @@ export async function checkProfileExists(username: string) {
     return false;
   }
 }
+
+export async function getProfileByUsername(username: string) {
+  try {
+    const profile = await prisma.profile.findUnique({
+      where: {
+        username: username.toLowerCase(),
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+    return profile;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
+export async function updateProfile(
+  username: string,
+  profileData: {
+    avatar: string;
+    displayName: string;
+    bio: string;
+  }
+) {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    if (!session) {
+      return {
+        success: false,
+        error: "You must be logged in to update your profile.",
+      };
+    }
+
+    const profile = await prisma.profile.findUnique({
+      where: {
+        username: username.toLowerCase(),
+      },
+    });
+
+    if (!profile || profile.userId !== session.user.id) {
+      return {
+        success: false,
+        error: "Profile not found or you do not have permission to update it.",
+      };
+    }
+
+    const updatedProfile = await prisma.profile.update({
+      where: {
+        id: profile.id,
+      },
+      data: {
+        name: profileData.displayName,
+        bio: profileData.bio,
+        avatar: profileData.avatar,
+      },
+    });
+
+    revalidatePath(`/update-profile/${username}`);
+    return {
+      success: true,
+      profile: updatedProfile,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      error: "An error occurred while updating the profile.",
+    };
+  }
+}
