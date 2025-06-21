@@ -2,6 +2,11 @@
 
 **LinkLoop** is a clean, minimal Linktree-style web app built with Next.js 15, Prisma, BetterAuth, and ShadCN/UI. Easily share multiple links through a personalized profile. Users can sign up, manage profiles, and customize their link collections with emoji and titles.
 
+## 🚀 Demo
+
+Check out a live demo profile:  
+[https://link-loop-share.vercel.com/profile/saidmounaim](https://link-loop-share.vercel.com/profile/saidmounaim)
+
 ## Getting Started
 
 ### 1. Clone the repository
