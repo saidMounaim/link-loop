@@ -14,7 +14,7 @@ const CTA = () => {
               Ready to get started?
             </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Join millions of creators who trust LinkTree to connect their
+              Join millions of creators who trust LinkLoop to connect their
               audience with everything they create.
             </p>
             <Link href="/auth">
@@ -22,7 +22,7 @@ const CTA = () => {
                 size="lg"
                 className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
-                Create Your LinkTree
+                Create Your LinkLoop
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
