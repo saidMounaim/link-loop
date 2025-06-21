@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { LogOut, UserPlus, User } from "lucide-react";
+import { LogOut, UserPlus, User, LayoutDashboard } from "lucide-react";
 import { getUserInitials } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
@@ -52,6 +52,15 @@ const UserDropdown = () => {
           </div>
         </div>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link
+            href="/dashboard"
+            className="flex items-center text-blue-600 hover:text-blue-600 hover:bg-transparent"
+          >
+            <LayoutDashboard className="mr-2 h-4 w-4" />
+            Dashboard
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link
             href="/create-profile"

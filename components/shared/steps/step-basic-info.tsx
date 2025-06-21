@@ -50,12 +50,11 @@ export default function StepBasicInfo({
           </p>
         </div>
         <Separator />
-        {/* Username */}
         <div className="space-y-2">
           <Label htmlFor="username">Username *</Label>
           <div className="flex items-center space-x-2">
             <span className="text-gray-500 text-sm bg-gray-100 px-3 py-2 rounded-md whitespace-nowrap">
-              linktree.com/
+              linkloop.com/
             </span>
             <Input
               id="username"

@@ -4,8 +4,10 @@ import { ExternalLink } from "lucide-react";
 import {
   checkProfileExists,
   getProfileByUsername,
+  incrementProfileViews,
 } from "@/lib/actions/profiles";
 import { notFound } from "next/navigation";
+import TrackedLink from "@/components/shared/profile/tracked-link";
 
 export default async function ProfilePage({
   params,
@@ -19,6 +21,8 @@ export default async function ProfilePage({
   if (!checkUsername) notFound();
 
   const profile = await getProfileByUsername(username);
+
+  await incrementProfileViews(username);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -45,19 +49,13 @@ export default async function ProfilePage({
 
                 <div className="w-full space-y-4">
                   {profile?.links.map((link) => (
-                    <a
-                      key={link.id}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full bg-gray-100 hover:bg-gray-200 rounded-xl p-4 font-semibold text-gray-900 transition-all duration-300 hover:shadow-lg hover:scale-105 flex items-center justify-center space-x-3 group"
-                    >
+                    <TrackedLink key={link.id} link={link}>
                       {link.emoji && (
                         <span className="text-xl">{link.emoji}</span>
                       )}
                       <small className="flex-1 text-center">{link.title}</small>
                       <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </a>
+                    </TrackedLink>
                   ))}
 
                   {profile?.links.length === 0 && (

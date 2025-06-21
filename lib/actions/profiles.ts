@@ -233,3 +233,21 @@ export async function updateProfile(
     };
   }
 }
+
+export async function incrementProfileViews(username: string) {
+  await prisma.profile.update({
+    where: { username },
+    data: { views: { increment: 1 } },
+  });
+}
+
+export async function getTotalProfileViews(userId: string) {
+  const result = await prisma.profile.aggregate({
+    where: { userId },
+    _sum: { views: true },
+  });
+
+  return {
+    totalViews: result._sum.views || 0,
+  };
+}

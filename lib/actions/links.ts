@@ -141,3 +141,37 @@ export async function orderLink(
     };
   }
 }
+
+export async function getUserLinksStats(userId: string) {
+  const profiles = await prisma.profile.findMany({
+    where: { userId },
+    select: { id: true },
+  });
+  const profileIds = profiles.map((p) => p.id);
+
+  if (profileIds.length === 0) {
+    return { totalLinks: 0, totalClicks: 0 };
+  }
+
+  const [totalLinks, totalClicks] = await prisma.$transaction([
+    prisma.link.count({
+      where: { profileId: { in: profileIds } },
+    }),
+    prisma.link.aggregate({
+      where: { profileId: { in: profileIds } },
+      _sum: { clicks: true },
+    }),
+  ]);
+
+  return {
+    totalLinks,
+    totalClicks: totalClicks._sum.clicks || 0,
+  };
+}
+
+export async function incrementLinkClicks(linkId: string) {
+  await prisma.link.update({
+    where: { id: linkId },
+    data: { clicks: { increment: 1 } },
+  });
+}
