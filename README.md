@@ -5,7 +5,7 @@
 ## 🚀 Demo
 
 Check out a live demo profile:  
-[https://link-loop-share.vercel.com/profile/saidmounaim](https://link-loop-share.vercel.com/profile/saidmounaim)
+[https://link-loop-share.vercel.app/profile/saidmounaim](https://link-loop-share.vercel.app/profile/saidmounaim)
 
 ## Getting Started
 
@@ -13,21 +13,27 @@ Check out a live demo profile:
 
 Run the following command to clone the repo:
 
+```bash
 git clone https://github.com/saidMounaim/link-loop.git
+```
 
 ### 2. Install dependencies
 
 Install all dependencies by running:
 
+```bash
 npm install
+```
 
 ### 3. Create a `.env` file
 
 Create a `.env` file in the root directory with the following environment variables:
 
+```env
 DATABASE_URL=""
 BETTER_AUTH_BASE_URL=""
 BETTER_AUTH_SECRET=""
+```
 
 Make sure your `.env` file is configured correctly to connect to your database and BetterAuth.
 
@@ -35,7 +41,9 @@ Make sure your `.env` file is configured correctly to connect to your database a
 
 Start the development server with:
 
+```bash
 npm run dev
+```
 
 ## Features
 
