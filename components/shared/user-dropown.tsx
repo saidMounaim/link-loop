@@ -63,7 +63,7 @@ const UserDropdown = () => {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link
-            href="/profile"
+            href="/profiles"
             className="flex items-center text-blue-600 hover:text-blue-600 hover:bg-transparent"
           >
             <User className="mr-2 h-4 w-4" />

@@ -73,6 +73,20 @@ model Profile {
   bio       String?
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
+  links     Link[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Link {
+  id        String   @id @default(cuid())
+  profileId String
+  title     String
+  url       String
+  emoji     String?
+  clicks    Int      @default(0)
+  order     Int      @default(0)
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

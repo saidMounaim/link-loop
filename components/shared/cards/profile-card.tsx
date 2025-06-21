@@ -43,7 +43,7 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
 
   return (
     <div className="relative group">
-      <Link href={`/${profile.username}`} className="block">
+      <Link href={`/links/${profile.username}`} className="block">
         <Card className="cursor-pointer bg-white/90 rounded-3xl shadow-2xl hover:shadow-3xl transition-all border-0 overflow-hidden">
           <CardContent className="p-8 flex flex-col items-center space-y-5">
             <div className="relative">

@@ -129,3 +129,17 @@ export async function deleteProfile(username: string, pathname: string) {
     };
   }
 }
+
+export async function checkProfileExists(username: string) {
+  try {
+    const profile = await prisma.profile.findUnique({
+      where: {
+        username: username.toLowerCase(),
+      },
+    });
+    return !!profile;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}

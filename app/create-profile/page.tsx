@@ -1,137 +1,50 @@
-"use client";
+import CreateProfile from "@/components/shared/profile/create-profile";
+import Link from "next/link";
+import { ArrowLeft, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getProfiles } from "@/lib/actions/profiles";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import CreateProfileHeader from "@/components/shared/profile/create-profile-header";
-import ProfileProgress from "@/components/shared/profile/profile-progress";
-import ProfileLivePreview from "@/components/shared/profile/profile-live-preview";
-import StepBasicInfo from "@/components/shared/steps/step-basic-info";
-import StepBio from "@/components/shared/steps/step-bio";
-import StepProfilePicture from "@/components/shared/steps/step-profile-picture";
-import ProfileNavigation from "@/components/shared/profile/profile-navigation";
-import { addProfile, checkUsernameAvailability } from "@/lib/actions/profiles";
-import { toast } from "sonner";
-
-interface Profile {
-  username: string;
-  bio: string;
-  avatar: string;
-  displayName: string;
-}
-
-export default function CreateProfilePage() {
-  const router = useRouter();
-  const [currentStep, setCurrentStep] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [profile, setProfile] = useState<Profile>({
-    username: "",
-    bio: "",
-    avatar: "",
-    displayName: "",
+export default async function CreateProfilePage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
   });
 
-  const updateProfile = async (field: keyof Profile, value: string) => {
-    setProfile((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleNext = async () => {
-    const checkUsername = await checkUsernameAvailability(profile.username);
-    if (profile.username && !checkUsername.success) {
-      toast.error(checkUsername.error || "Username is already taken.");
-      return;
-    }
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const handleComplete = async () => {
-    setIsLoading(true);
-    try {
-      const createProfile = await addProfile({
-        username: profile.username,
-        bio: profile.bio,
-        avatar: profile.avatar,
-        displayName: profile.displayName,
-      });
-      if (!createProfile.success) {
-        toast.error(createProfile.error || "Failed to create profile.");
-        setIsLoading(false);
-        return;
-      }
-      toast.success("Profile created successfully!");
-      setTimeout(() => {
-        setIsLoading(false);
-        router.push("/dashboard");
-      }, 2000);
-    } catch (error) {
-      toast.error("An error occurred while creating your profile.");
-      console.error(error);
-    }
-  };
-
-  const isStepValid = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          profile.displayName.trim() !== "" && profile.username.trim() !== ""
-        );
-      case 2:
-        return profile.bio.trim() !== "";
-      case 3:
-        return true;
-      default:
-        return false;
-    }
-  };
-
-  const progressPercentage = (currentStep / 3) * 100;
-
+  if (!session) redirect("/login");
+  const profiles = await getProfiles(session.user.id);
+  console.log(profiles.length);
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <CreateProfileHeader currentStep={currentStep} />
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
-          <ProfileProgress progressPercentage={progressPercentage} />
-          <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              {currentStep === 1 && (
-                <StepBasicInfo
-                  profile={profile}
-                  updateProfile={updateProfile}
-                />
-              )}
-              {currentStep === 2 && (
-                <StepBio profile={profile} updateProfile={updateProfile} />
-              )}
-              {currentStep === 3 && (
-                <StepProfilePicture
-                  profile={profile}
-                  updateProfile={updateProfile}
-                />
-              )}
-              <ProfileNavigation
-                currentStep={currentStep}
-                handleBack={handleBack}
-                handleNext={handleNext}
-                handleComplete={handleComplete}
-                isStepValid={isStepValid}
-                isLoading={isLoading}
-              />
+    <>
+      {profiles.length === 0 && <CreateProfile />}
+      {profiles.length > 0 && (
+        <div className="min-h-screen bg-gradient-to-br from-white-50 via-white to-white-50">
+          <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+            <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <Link href="/dashboard">
+                  <Button variant="ghost" size="sm">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back to Dashboard
+                  </Button>
+                </Link>
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    Create Profile
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="lg:col-span-1">
-              <ProfileLivePreview profile={profile} />
-            </div>
+          </header>
+          <div className="container mx-auto my-7 bg-yellow-100 border-l-4 border-yellow-400 text-yellow-800 p-4 rounded-lg shadow mb-6">
+            <strong>Note:</strong> You can only create one profile for now.
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
