@@ -1,11 +1,17 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { auth } from "@/lib/auth";
 import { ArrowRight, Star, Users } from "lucide-react";
+import { headers } from "next/headers";
 import Link from "next/link";
 import React from "react";
 
-const Hero = () => {
+const Hero = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   return (
     <main className="container mx-auto px-4 py-12 md:py-24">
       <div className="text-center max-w-4xl mx-auto">
@@ -25,27 +31,28 @@ const Hero = () => {
           Share your content, grow your audience, and turn your passion into
           profit with one simple link.
         </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Link href="/auth">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-            >
-              Get Started Free
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
-          <Link href="/auth">
-            <Button
-              variant="outline"
-              size="lg"
-              className="px-8 py-6 text-lg font-semibold border-2 hover:bg-gray-50 transition-all duration-300"
-            >
-              Sign In
-            </Button>
-          </Link>
-        </div>
+        {!session && (
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Link href="/auth">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              >
+                Get Started Free
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
+            <Link href="/auth">
+              <Button
+                variant="outline"
+                size="lg"
+                className="px-8 py-6 text-lg font-semibold border-2 hover:bg-gray-50 transition-all duration-300"
+              >
+                Sign In
+              </Button>
+            </Link>
+          </div>
+        )}
 
         <div className="max-w-sm mx-auto">
           <Card className="bg-white/80 backdrop-blur-sm shadow-2xl border-0 transform hover:scale-105 transition-transform duration-300">

@@ -10,8 +10,16 @@ import { LinkIcon } from "lucide-react";
 import Link from "next/link";
 import SignInForm from "@/components/shared/forms/sign-in-form";
 import SignUpForm from "@/components/shared/forms/sign-up-form";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
-export default function AuthPage() {
+export default async function AuthPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session) redirect("/dashboard");
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">

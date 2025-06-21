@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Trash2, Pencil } from "lucide-react";
+import { Trash2, Pencil, Globe, Link2 } from "lucide-react";
 import { toast } from "sonner";
 import { deleteProfile } from "@/lib/actions/profiles";
 import { usePathname } from "next/navigation";
@@ -43,7 +43,7 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
 
   return (
     <div className="relative group">
-      <Link href={`/links/${profile.username}`} className="block">
+      <div className="block">
         <Card className="cursor-pointer bg-white/90 rounded-3xl shadow-2xl hover:shadow-3xl transition-all border-0 overflow-hidden">
           <CardContent className="p-8 flex flex-col items-center space-y-5">
             <div className="relative">
@@ -63,27 +63,52 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
             <p className="text-gray-600 text-center line-clamp-3">
               {profile.bio}
             </p>
-            <div className="block w-full mt-4">
-              <object>
-                <Link
-                  href={`/update-profile/${profile.username}`}
-                  className="w-full"
+            <div className="flex flex-col gap-2 w-full mt-4">
+              <Link
+                href={`/update-profile/${profile.username}`}
+                className="w-full"
+              >
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="w-full flex items-center justify-center"
+                  type="button"
                 >
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="w-full flex items-center justify-center"
-                    type="button"
-                  >
-                    <Pencil className="w-4 h-4 mr-2" />
-                    Edit Profile
-                  </Button>
-                </Link>
-              </object>
+                  <Pencil className="w-4 h-4 mr-2" />
+                  Edit Profile
+                </Button>
+              </Link>
+              <Link
+                href={`/profile/${profile.username}`}
+                className="w-full"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="w-full flex items-center justify-center"
+                  type="button"
+                >
+                  <Globe className="w-4 h-4 mr-2" />
+                  Public Profile
+                </Button>
+              </Link>
+              <Link href={`/links/${profile.username}`} className="w-full">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="w-full flex items-center justify-center"
+                  type="button"
+                >
+                  <Link2 className="w-4 h-4 mr-2" />
+                  Manage Links
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
-      </Link>
+      </div>
       <button
         onClick={() => handleDelete(profile.username)}
         className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg"

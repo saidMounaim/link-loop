@@ -17,7 +17,7 @@ const CTA = () => {
               Join millions of creators who trust LinkTree to connect their
               audience with everything they create.
             </p>
-            <Link href="/sign-up">
+            <Link href="/auth">
               <Button
                 size="lg"
                 className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"

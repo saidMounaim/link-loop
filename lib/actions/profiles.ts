@@ -157,6 +157,17 @@ export async function getProfileByUsername(username: string) {
             email: true,
           },
         },
+        links: {
+          select: {
+            id: true,
+            title: true,
+            url: true,
+            emoji: true,
+          },
+          orderBy: {
+            order: "asc",
+          },
+        },
       },
     });
     return profile;
