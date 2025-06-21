@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { auth } from "../auth";
 import { prisma } from "../prisma";
+import { revalidatePath } from "next/cache";
 
 export async function checkUsernameAvailability(username: string) {
   try {
@@ -58,6 +59,73 @@ export async function addProfile(profileData: {
     return {
       success: false,
       error: "An error occurred while creating the profile.",
+    };
+  }
+}
+
+export async function getProfiles(userId: string) {
+  const profiles = await prisma.profile.findMany({
+    where: {
+      user: {
+        id: userId,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+  return profiles;
+}
+
+export async function deleteProfile(username: string, pathname: string) {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    if (!session) {
+      return {
+        success: false,
+        error: "You must be logged in to delete a profile.",
+      };
+    }
+
+    const profile = await prisma.profile.findUnique({
+      where: {
+        username: username.toLowerCase(),
+      },
+    });
+
+    if (!profile || profile.userId !== session.user.id) {
+      return {
+        success: false,
+        error: "Profile not found or you do not have permission to delete it.",
+      };
+    }
+
+    await prisma.profile.delete({
+      where: {
+        id: profile.id,
+      },
+    });
+
+    revalidatePath(pathname);
+    return {
+      success: true,
+      message: "Profile deleted successfully.",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      error: "An error occurred while deleting the profile.",
     };
   }
 }
